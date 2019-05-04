@@ -2,7 +2,7 @@
 
 This is a simplified and easier to use version of DeepMind's streetlearn dataset. The existing
 streetlearn codebase hits you with a slice of Google's infra structure. With this version,
-you don't have to.
+you can dodge that.
 
 ![map of Manhattan](streetlearn_scripts/figures/manhattan_map.png)
 
