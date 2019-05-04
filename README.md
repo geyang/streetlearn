@@ -8,7 +8,7 @@ you can dodge that.
 
 ## Installation
 
-**Install LevelDB driver `plyvel``**
+**Install LevelDB driver `plyvel`**
 LevelDB is dead. You really shouldn't invest time in this, unless you want to get data out of
 streetlearn. To install `plyvel`, which was the most popular python library for levelDB on mac
 OSX, run the following: 
@@ -32,8 +32,8 @@ In this case you want to install protobuf in your system as sudo:
 ```bash
 pip install --ignore-installed six
 sudo pip install protobuf
-# ... Installing collected packages: protobuf
-# ... Successfully installed protobuf-3.7.1
+# ...Installing collected packages: protobuf
+# ...Successfully installed protobuf-3.7.1
 ```
 
 
