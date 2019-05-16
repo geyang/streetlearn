@@ -40,7 +40,7 @@ def blob2image(image_blob, size, gray_scale=False):
         img = cv2.resize(img, dsize=tuple(size), interpolation=cv2.INTER_CUBIC)
     if gray_scale:
         return img
-    return img[2, 1, 0]  # return RGB instead of GBR
+    return img[..., [2, 1, 0]]  # return RGB instead of GBR
 
 
 def inside(coord, x0, y0, w, h):
