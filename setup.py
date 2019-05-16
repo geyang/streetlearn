@@ -10,8 +10,6 @@ setup(name='streetlearn',
           "opencv-python",
           "pandas",
           "pillow",
-          "plyvel",
-          "seaborn",
           "tqdm"
       ],
       description='opensource-streetlearn-battery-included',
