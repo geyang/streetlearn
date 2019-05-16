@@ -24,9 +24,9 @@ import google.protobuf
 ```
 You will get the following error:
 ```bash
-    Traceback (most recent call last):
-    File "<stdin>", line 1, in <module>
-    ImportError: No module named google.protobuf
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+ImportError: No module named google.protobuf
 ```
 In this case you want to install protobuf in your system as sudo:
 ```bash
