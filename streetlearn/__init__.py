@@ -94,8 +94,7 @@ class StreetLearnDataset:
             self.config_view_mode(view_size, view_mode)
 
     def select_all(self):
-        x0, y0 = self.lng.min(), self.lat.min()
-        return self.select_bbox(x0, y0, self.lng.max() - x0, self.lat.max() - y0)
+        return self.select_bbox(*self.get_bbox())
 
     def select_bbox(self, x0, y0, w, h):
         self.bbox = x0, y0, w, h
@@ -103,6 +102,11 @@ class StreetLearnDataset:
         self.inside_inds = np.arange(len(self.coords))[inside_mask]
         self.inside_coords = self.coords[self.inside_inds]
         return self
+
+    def get_bbox(self):
+        min = self.lng_lat.min(axis=0)
+        max = self.lng_lat.max(axis=0)
+        return [*min, *(max - min)]
 
     def config_view_mode(self, size, mode):
         self.view_size = size
@@ -126,9 +130,6 @@ class StreetLearnDataset:
             np.save(path + "/view_512/chunk_{:04d}.npy".format(i), np.array(_))
         print('data is now saved at', end='')
         cprint(path, "green")
-
-    def make_pair_dataset(self):
-        return DataSet()
 
     def show_full_map(self, file, show=None):
         import matplotlib.pyplot as plt
@@ -217,7 +218,6 @@ class StreetLearnDataset:
             self.pairwise_ds = np.linalg.norm(
                 (self.lng_lat[None, :, :] - self.lng_lat[:, None, :]) * magic,
                 ord=ord, axis=-1)
-            print(self.pairwise_ds[:1])
             cprint('✓done', 'green')
             self.pairwise_ds[np.eye(l, dtype=bool)] = float('inf')
         mask = np.ones(l, dtype=bool) if mask is None else mask
