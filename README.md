@@ -1,10 +1,17 @@
-# DeepMind StreetLearn Dataset
+# Simplified Processing Pipeline for DeepMind StreetLearn Dataset
 
-This is a simplified and easier to use version of DeepMind's streetlearn dataset. The existing
-streetlearn codebase hits you with a slice of Google's infra structure. With this version,
-you can dodge that.
+This is a simplified and easier to use data processing pipeline for DeepMind's streetlearn 
+dataset. The existing streetlearn codebase hits you with a slice of Google's infra 
+structure. With this version, you can dodge that.
 
-![map of Manhattan](processed-data/manhattan-small/figures/bounding_box.png)
+**Note**: The usage of the dataset is under a Usage Agreement with google. It seems it is per-
+institutution level so FAIR usage are fine, but need to double check with legal. The user
+agreement could be found here: [google data set applicaiton form](https://sites.google.com/view/learn-navigate-cities-nips18/dataset)
+
+This is our working repo, so sections below contains mention of the dataset itself that
+you might need to sign the form above to access.
+
+<a href="https://github.com/episodeyang/jaynes" target="_blank"><img src="processed-data/manhattan-small/figures/bounding_box.png" alt="map of Manhattan" align="right" width="200px" style="top:20px"></a>
 
 ## Simple Usage
 
