@@ -1,0 +1,6 @@
+
+seed: 1
+coverage: 4
+prefix: ../processed-data/manhattan-large 
+size: 1495
+bbox: (-73.99699947982805, 40.726008639817245, 0.00999942365351103, 0.007986187313427706)

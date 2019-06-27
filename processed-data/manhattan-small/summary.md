@@ -1,0 +1,6 @@
+
+seed: 1
+coverage: 4
+prefix: ../processed-data/manhattan-small 
+size: 255
+bbox: (-73.99698090623339, 40.72730617544701, 0.003970809291459432, 0.0034904597927223335)

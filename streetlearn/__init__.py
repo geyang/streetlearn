@@ -216,7 +216,7 @@ class StreetLearnDataset:
             cprint('computing pairwise distance matrix [{0} x {0}]'.format(l), 'yellow')
             magic = [1, 0.75]  # projective correction
             self.pairwise_ds = np.linalg.norm(
-                (self.lng_lat[None, :, :] - self.lng_lat[:, None, :]) * magic,
+                (self.lng_lat[None, :, :] - self.lng_lat[:, None, :]) / magic,
                 ord=ord, axis=-1)
             cprint('✓done', 'green')
             self.pairwise_ds[np.eye(l, dtype=bool)] = float('inf')
@@ -264,6 +264,7 @@ class StreetLearnDataset:
         :param H: maximum horizon for the sampled trajectories.
         :param r: cut-off radius for the neighbor
         :param T: temperature for the Boltzmann distribution
+        :param no_orphans: avoid having orphans in the dataset
         :return:
         """
         pool = {*self.inds}
@@ -279,7 +280,6 @@ class StreetLearnDataset:
                     # pick closest
                     p = np.exp(-ds) / T
                     ind = np.random.choice(ns_inds, p=p / p.sum())
-                    print(ind)
                     pool.remove(ind)
                     covered[ind] = False
                     if len(traj) == H:
