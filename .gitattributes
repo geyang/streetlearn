@@ -70,3 +70,4 @@ processed-data/manhattan/view_512/chunk_0013.npy filter=lfs diff=lfs merge=lfs -
 processed-data/pittsburgh/view_512/chunk_0002.npy filter=lfs diff=lfs merge=lfs -text
 processed-data/pittsburgh/view_512/chunk_0010.npy filter=lfs diff=lfs merge=lfs -text
 .npy filter=lfs diff=lfs merge=lfs -text
+**/*.npy filter=lfs diff=lfs merge=lfs -text
