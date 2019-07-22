@@ -64,6 +64,7 @@ def chunk(array, chunk_size=100):
 class StreetLearnDataset:
     coords = None
     compressed_images = None
+    lng_lat_correction = 0.74
 
     def __init__(self, path, view_size=None, view_mode=None):
         """
@@ -76,6 +77,8 @@ class StreetLearnDataset:
         chunks.sort()
 
         self.coords = np.load(path + '/coords.npy', allow_pickle=True)
+        from ml_logger import logger
+        logger.print(chunks, color='green')
         self.compressed_images = np.concatenate(
             [np.load(p, allow_pickle=True) for p in tqdm(chunks, desc="reading...")])
         try:
@@ -96,9 +99,14 @@ class StreetLearnDataset:
     def select_all(self):
         return self.select_bbox(*self.get_bbox())
 
-    def select_bbox(self, x0, y0, w, h):
+    def select_bbox(self, x0, y0, w, h, exclude=None):
         self.bbox = x0, y0, w, h
         inside_mask = np.array([inside(_, x0, y0, w, h) for _ in self.lng_lat])
+
+        if exclude:
+            for exclude_bbox in exclude:
+                inside_mask = inside_mask > np.array([inside(_, *exclude_bbox) for _ in self.lng_lat])
+
         self.inside_inds = np.arange(len(self.coords))[inside_mask]
         self.inside_coords = self.coords[self.inside_inds]
         return self
@@ -140,8 +148,9 @@ class StreetLearnDataset:
         plt.title('Manhattan')
         plt.gca().spines['right'].set_visible(False)
         plt.gca().spines['top'].set_visible(False)
-        plt.xlabel('Latitude')
-        plt.ylabel('Longitude')
+        plt.xlabel('Longitude')
+        plt.ylabel('Latitude')
+        plt.gca().set_aspect(1 / self.lng_lat_correction)
         if file is not None:
             os.makedirs(dirname(file), exist_ok=True)
             plt.savefig(file, bbox_inches="tight")
@@ -161,8 +170,9 @@ class StreetLearnDataset:
         plt.title('Greenwich Village (Small)')
         plt.gca().spines['right'].set_visible(False)
         plt.gca().spines['top'].set_visible(False)
-        plt.xlabel('Latitude')
-        plt.ylabel('Longitude')
+        plt.xlabel('Longitude')
+        plt.ylabel('Latitude')
+        plt.gca().set_aspect(1 / self.lng_lat_correction)
         if file is not None:
             os.makedirs(dirname(file), exist_ok=True)
             plt.savefig(file, bbox_inches="tight")
@@ -175,6 +185,7 @@ class StreetLearnDataset:
         from matplotlib import patches
 
         fig = fig or plt.figure(figsize=np.array(frame_box) * self.bbox[2:] / self.bbox[2], dpi=300)
+
         plt.scatter(self.lng, self.lat, s=0.5, facecolor="gray", lw=0)
         plt.scatter(*self.lng_lat[self.inside_inds].T, s=s, facecolor=color, edgecolors=(1, 1, 1, 0.7), lw=0.5,
                     zorder=2)
@@ -185,10 +196,12 @@ class StreetLearnDataset:
         if set_lim:
             plt.xlim(self.bbox[0] - 0.003, self.bbox[0] + self.bbox[2] + 0.003)
             plt.ylim(self.bbox[1] - 0.001, self.bbox[1] + self.bbox[3] + 0.001)
+
         plt.gca().spines['right'].set_visible(False)
         plt.gca().spines['top'].set_visible(False)
+        plt.xlabel('Longitude')
         plt.xlabel('Latitude')
-        plt.ylabel('Longitude')
+        plt.gca().set_aspect(1 / self.lng_lat_correction)
         if file is not None:
             os.makedirs(dirname(file), exist_ok=True)
             plt.savefig(file, bbox_inches="tight")
@@ -214,7 +227,7 @@ class StreetLearnDataset:
         l = len(self.lng_lat)
         if self.pairwise_ds is None:
             cprint('computing pairwise distance matrix [{0} x {0}]'.format(l), 'yellow')
-            magic = [1, 0.75]  # projective correction
+            magic = [1, self.lng_lat_correction]
             self.pairwise_ds = np.linalg.norm(
                 (self.lng_lat[None, :, :] - self.lng_lat[:, None, :]) / magic,
                 ord=ord, axis=-1)

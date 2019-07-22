@@ -13,6 +13,7 @@ if __name__ == "__main__":
     from tqdm import tqdm
 
     # to protect from accidental runs
+    print('exit here to prevent accidental runs.')
     exit()
 
     # %%

@@ -19,7 +19,7 @@ if __name__ == "__main__":
     import numpy as np
     import matplotlib.pyplot as plt
     from os.path import expanduser
-    from streetlearn import StreetLearnDataset
+    from streetlearn import StreetLearnDataset, inside
     # %%
     import os
 
@@ -60,9 +60,18 @@ if __name__ == "__main__":
         dataset = StreetLearnDataset(path="../processed-data/manhattan")
         prefix = "../processed-data/manhattan-small"
         dataset.show_full_map(prefix + '/figures/full.png')
-        dataset.select_bbox(-73.997, 40.7273, 0.004, 0.0035)
+        dataset.select_bbox(-73.9966, 40.7282, 0.0042, 0.0035)
         dataset.show_bbox(prefix + '/figures/bounding_box.png', show=True)
+
+        x = 0.003
+        y = 0.0035 * 0.15
+        remove_1 = (-73.9966 + x, 40.7282, 0.0042 - x, y)
+        remove_2 = (-73.9966 + x, 40.7282 + 0.0035 - y, 0.0042 - x, y)
+
+        dataset.select_bbox(-73.9966, 40.7282, 0.0042, 0.0035, exclude=[remove_1, remove_2])
+
         dataset.show_blowout("NYC-small", prefix + '/figures/blow_out.png', show=True)
+
         dataset.save_dataset(path=prefix)
 
 
@@ -137,18 +146,18 @@ if __name__ == "__main__":
         print('done')
 
 
-    make_xl()
-    make_large()
-    make_medium()
+    # make_xl()
+    # make_large()
+    # make_medium()
     make_small()
-    make_tiny()
+    # make_tiny()
 
     for prefix in [
-        "../processed-data/manhattan-xl",
-        "../processed-data/manhattan-large",
-        "../processed-data/manhattan-medium",
+        #     "../processed-data/manhattan-xl",
+        #     "../processed-data/manhattan-large",
+        #     "../processed-data/manhattan-medium",
         "../processed-data/manhattan-small",
-        "../processed-data/manhattan-tiny"
+        #     "../processed-data/manhattan-tiny"
     ]:
         visualize_trajectories(prefix)
 

@@ -1,9 +1,9 @@
 # Reduced StreetLearn Datasets
 
 The datasets here are saved in numpy, making them much more portable
-than what was in the original DeepMind streetlearn dataset. 
+than what was in the original DeepMind streetlearn dataset.
 
-The folder structure looks like below: 
+The folder structure looks like below:
 
 ```
 ├── README.md
@@ -32,9 +32,8 @@ The folder structure looks like below:
     └── view_512
 ```
 
-The `trajs.npy` file contains trajectories sampled from that 
+The `trajs.npy` file contains trajectories sampled from that
 dataset.
-
 
 ## Processed-Dataset Details:
 
