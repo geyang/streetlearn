@@ -13,6 +13,10 @@ you might need to sign the form above to access.
 
 <a href="https://github.com/episodeyang/jaynes" target="_blank"><img src="processed-data/manhattan-small/figures/bounding_box.png" alt="map of Manhattan" align="right" width="200px" style="top:20px"></a>
 
+## ToDo
+
+- [ ] make the data generation deterministic, by setting random seeds
+
 ## 2019-06-27 Update
 
 - Reduced the size of `manhattan-small` and `manhattan-medium`.
