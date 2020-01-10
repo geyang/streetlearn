@@ -1,9 +1,9 @@
+---
 seed: 1
 coverage: 4
 prefix: ../processed-data/manhattan-small 
 size: 254
 bbox: (-73.99657862071987, 40.7282067518659, 0.00415966581174132, 0.0034891125851785887)
-
 ---
 
 # StreetLearn [small]
@@ -16,5 +16,7 @@ We train the local metric using these generated trajectories.
 <img height="200" float="left" src="figures/trajectories.png"/>
 </p>
 
-<img height="120" align="right" src="figures/bounding_box.png"/>
+The placement of the bounding box w.r.t. Manhattan can be seen below:
+
+<img width="300" align="right" src="figures/bounding_box.png"/>
 

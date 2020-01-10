@@ -1,6 +1,0 @@
-
-seed: 1
-coverage: 4
-prefix: ../processed-data/manhattan-xl 
-size: 5355
-bbox: (-73.99699947982805, 40.72600072316067, 0.019993416963771438, 0.015995486385776303)

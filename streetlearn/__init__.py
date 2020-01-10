@@ -1,9 +1,10 @@
 import os
 from glob import glob
-from os.path import dirname
+from os.path import dirname, expanduser
 
 import cv2
 import numpy as np
+from numpy.core._multiarray_umath import ndarray
 from termcolor import cprint
 from tqdm import tqdm
 
@@ -62,6 +63,7 @@ def chunk(array, chunk_size=100):
 
 
 class StreetLearnDataset:
+    lng_lat: ndarray
     coords = None
     compressed_images = None
     lng_lat_correction = 0.74
@@ -157,7 +159,7 @@ class StreetLearnDataset:
         if show is not False:
             fig.show()
 
-    def show_bbox(self, file, show=None):
+    def show_bbox(self, file=None, show=None):
         import matplotlib.pyplot as plt
         from matplotlib import patches
 
