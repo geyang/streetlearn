@@ -66,7 +66,9 @@ class StreetLearnDataset:
     lng_lat: ndarray
     coords = None
     compressed_images = None
-    lng_lat_correction = 0.74
+
+    # ratio for the unit in y, per matplotlib's convention
+    lat_correction = 1 / 0.74
 
     def __init__(self, path, view_size=None, view_mode=None):
         """
@@ -152,7 +154,8 @@ class StreetLearnDataset:
         plt.gca().spines['top'].set_visible(False)
         plt.xlabel('Longitude')
         plt.ylabel('Latitude')
-        plt.gca().set_aspect(1 / self.lng_lat_correction)
+        plt.gca().set_aspect(self.lat_correction)
+        plt.tight_layout()
         if file is not None:
             os.makedirs(dirname(file), exist_ok=True)
             plt.savefig(file, bbox_inches="tight")
@@ -165,6 +168,7 @@ class StreetLearnDataset:
 
         frame_box = np.array([60, 3 * 23.75])
         fig = plt.figure(figsize=frame_box * (self.lng_lat.max(axis=0) - self.lng_lat.min(axis=0)), dpi=300)
+        # fig = plt.figure(figsize=np.array(frame_box) * self.bbox[2:] / self.bbox[2], dpi=300)
         plt.scatter(self.lng, self.lat, s=0.5, facecolor="gray", lw=0)
         plt.scatter(*self.lng_lat[self.inside_inds].T, s=1, facecolor="#23aaff", lw=0)
         rect = patches.Rectangle(self.bbox[:2], *self.bbox[2:], linewidth=4, edgecolor='r', facecolor="none", alpha=0.7)
@@ -174,14 +178,16 @@ class StreetLearnDataset:
         plt.gca().spines['top'].set_visible(False)
         plt.xlabel('Longitude')
         plt.ylabel('Latitude')
-        plt.gca().set_aspect(1 / self.lng_lat_correction)
+        plt.gca().set_aspect(self.lat_correction)
+        plt.tight_layout()
         if file is not None:
             os.makedirs(dirname(file), exist_ok=True)
             plt.savefig(file, bbox_inches="tight")
         if show is not False:
             fig.show()
 
-    def show_blowout(self, title="", file=None, fig=None, frame_box=(3, 3.75), s=2, color="#23aaff", box_alpha=0.7,
+    def show_blowout(self, title="", file=None, fig=None, frame_box=(3, 3.75), s=2,
+                     color="#23aaff", box_color='red', box_alpha=0.7,
                      show=None, set_lim=True):
         import matplotlib.pyplot as plt
         from matplotlib import patches
@@ -191,7 +197,7 @@ class StreetLearnDataset:
         plt.scatter(self.lng, self.lat, s=0.5, facecolor="gray", lw=0)
         plt.scatter(*self.lng_lat[self.inside_inds].T, s=s, facecolor=color, edgecolors=(1, 1, 1, 0.7), lw=0.5,
                     zorder=2)
-        rect = patches.Rectangle(self.bbox[:2], *self.bbox[2:], linewidth=4, edgecolor='r', facecolor="none",
+        rect = patches.Rectangle(self.bbox[:2], *self.bbox[2:], linewidth=4, edgecolor=box_color, facecolor="none",
                                  alpha=box_alpha)
         plt.gca().add_patch(rect)
         plt.title(title, fontsize=7, pad=-0.15)
@@ -202,8 +208,8 @@ class StreetLearnDataset:
         plt.gca().spines['right'].set_visible(False)
         plt.gca().spines['top'].set_visible(False)
         plt.xlabel('Longitude')
-        plt.xlabel('Latitude')
-        plt.gca().set_aspect(1 / self.lng_lat_correction)
+        plt.ylabel('Latitude')
+        plt.gca().set_aspect(self.lat_correction)
         if file is not None:
             os.makedirs(dirname(file), exist_ok=True)
             plt.savefig(file, bbox_inches="tight")
@@ -223,15 +229,34 @@ class StreetLearnDataset:
             inds = np.random.rand()
             return self.lng_lat[inds], inds
 
+    def locate(self, lng, lat, r=1.6e-4):
+        magic = [1, self.lat_correction]
+        ds = np.linalg.norm((self.lng_lat - [lng, lat]) * magic, ord=2, axis=-1)
+        return np.arange(len(ds), dtype=int)[ds < r]
+
+    def locate_closest(self, lng, lat):
+        magic = [1, self.lat_correction]
+        ds = np.linalg.norm((self.lng_lat - [lng, lat]) * magic, ord=2, axis=-1)
+        ind = np.argmin(ds)
+        return ind, ds[ind]
+
     pairwise_ds = None
 
     def neighbor(self, inds, r=1.6e-4, ord=1, mask=None):
+        """ todo: refactor indices to be first.
+
+        :param inds:
+        :param r:
+        :param ord:
+        :param mask:
+        :return: [self.lng_lat[_] for _ in ns_inds], ds, ns_inds
+        """
         l = len(self.lng_lat)
         if self.pairwise_ds is None:
             cprint('computing pairwise distance matrix [{0} x {0}]'.format(l), 'yellow')
-            magic = [1, self.lng_lat_correction]
+            magic = [1, self.lat_correction]
             self.pairwise_ds = np.linalg.norm(
-                (self.lng_lat[None, :, :] - self.lng_lat[:, None, :]) / magic,
+                (self.lng_lat[None, :, :] - self.lng_lat[:, None, :]) * magic,
                 ord=ord, axis=-1)
             cprint('✓done', 'green')
             self.pairwise_ds[np.eye(l, dtype=bool)] = float('inf')
