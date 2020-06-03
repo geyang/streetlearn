@@ -77,6 +77,8 @@ class StreetLearnDataset:
         :param view_size:
         :param view_mode: OneOf[None, 'omni-gray', 'omni-rgb', 'dir-gray', 'dir-rgb', ]. Only `omni-gray` is supported.
         """
+        path = expanduser(path)
+
         chunks = glob(path + "/view_512/*")
         chunks.sort()
 
